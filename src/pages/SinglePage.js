@@ -17,20 +17,16 @@ const SinglePage = () => {
 
     useEffect(() => {
 
-        setLoading(true)
-
         fetch(`http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/user/1/friends/${page}/20`)
             .then(data => data.json())
             .then(result => setData([...data, ...result.list]))
-            .finally(setLoading(false))
+            .finally(() => setLoading(false))
     }, [page])
 
-    const scrollEnd = () => {
-        setPage(page + 1)
-    }
     window.onscroll = function () {
         if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
-            scrollEnd()
+            setPage(page + 1)
+            setLoading(true)
         }
     }
 
@@ -43,7 +39,6 @@ const SinglePage = () => {
             .then(result => setUser(result))
     }, [page, id])
 
-    console.log(data);
     return (
         <>
             {user && <Grid container spacing={3}>
@@ -94,18 +89,16 @@ const SinglePage = () => {
             <h2>Friends:</h2>
             <>
                 {data && <Grid container spacing={2}>
-                    <Loader isLoading={Loading}>
-
-                        {
-                            data.map(el => (
-                                <Grid item lg={3} key={el.id} xs={6} md={4}>
-                                    <Link to={`/user/${el.id}`} onClick={() => setTitle([...title, { name: el.name, link: `/user/${el.id}` }])}>
-                                        <Card name={el.name} img={el.imageUrl} prefix={el.prefix} title={el.title} />
-                                    </Link>
-                                </Grid>
-                            ))
-                        }
-                    </Loader>
+                    {
+                        data.map(el => (
+                            <Grid item lg={3} key={el.id} xs={6} md={4}>
+                                <Link to={`/user/${el.id}`} onClick={() => setTitle([...title, { name: el.name, link: `/user/${el.id}` }])}>
+                                    <Card name={el.name} img={`${el.imageUrl}?id=${el.id}`} prefix={el.prefix} title={el.title} />
+                                </Link>
+                            </Grid>
+                        ))
+                    }
+                    {Loading && <Loader />}
                 </Grid>
                 }
 

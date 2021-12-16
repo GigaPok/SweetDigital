@@ -1,11 +1,9 @@
 import './Loader.css';
 
 
-const Loader = ({ isLoading, children }) => {
+const Loader = () => {
 
-    if (isLoading) return (<div className="lds-hourglass">Loading...</div>)
-
-    return children;
+    return (<div className="lds-hourglass">Loading...</div>)
 };
 
 export default Loader;

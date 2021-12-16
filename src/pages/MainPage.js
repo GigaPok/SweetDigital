@@ -13,38 +13,33 @@ const MainPage = () => {
 
     useEffect(() => {
 
-        setLoading(true)
 
         fetch(`http://sweeftdigital-intern.eu-central-1.elasticbeanstalk.com/user/${page}/20`)
             .then(data => data.json())
             .then(result => setData([...data, ...result.list]))
-            .finally(setLoading(false))
+            .finally(() => setLoading(false))
     }, [page])
 
-    const scrollEnd = () => {
-        setPage(page + 1)
-    }
     window.onscroll = function () {
         if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
-            scrollEnd()
+            setPage(page + 1)
+            setLoading(true)
         }
     }
 
-    console.log(data);
     return (
         <>
             {data && <Grid container spacing={2}>
-                <Loader isLoading={Loading}>
-                    {
-                        data.map(el => (
-                            <Grid item lg={3} key={el.id} xs={6} md={4}>
-                                <Link to={`/user/${el.id}`}>
-                                    <Card name={el.name} img={el.imageUrl} prefix={el.prefix} title={el.title} />
-                                </Link>
-                            </Grid>
-                        ))
-                    }
-                </Loader>
+                {
+                    data.map(el => (
+                        <Grid item lg={3} key={el.id} xs={6} md={4}>
+                            <Link to={`/user/${el.id}`}>
+                                <Card name={el.name} img={`${el.imageUrl}?id=${el.id}`} prefix={el.prefix} title={el.title} />
+                            </Link>
+                        </Grid>
+                    ))
+                }
+                {Loading && <Loader />}
             </Grid>}
 
         </>
